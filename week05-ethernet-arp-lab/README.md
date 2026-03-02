@@ -1,8 +1,8 @@
-\# Week 05 — Ethernet and ARP Analysis (Wireshark Lab)
+# Week 05 — Ethernet and ARP Analysis (Wireshark Lab)
 
 
 
-\## Overview
+## Overview
 
 
 
@@ -26,17 +26,17 @@ This lab connects Ethernet frame structure, MAC addressing, and ARP behavior as 
 
 
 
-\## Environment
+## Environment
 
 
 
-\- OS: Windows
+- OS: Windows
 
-\- Connection: Wi-Fi
+- Connection: Wi-Fi
 
-\- Tool: Wireshark
+- Tool: Wireshark
 
-\- Traffic generated using: `ping` and ARP cache clearing
+- Traffic generated using: `ping` and ARP cache clearing
 
 
 
@@ -44,11 +44,11 @@ This lab connects Ethernet frame structure, MAC addressing, and ARP behavior as 
 
 
 
-\# Part 1 — ARP Request (Broadcast)
+# Part 1 — ARP Request (Broadcast)
 
 
 
-!\[ARP Request](screenshots/arp\_request.png)
+![ARP Request](screenshots/arp\_request.png)
 
 
 
@@ -56,13 +56,13 @@ In the ARP request packet:
 
 
 
-\- \*\*Destination MAC:\*\* `ff:ff:ff:ff:ff:ff`
+- **Destination MAC:** `ff:ff:ff:ff:ff:ff`
 
-\- \*\*Opcode:\*\* request (1)
+- **Opcode:** request (1)
 
-\- The sender includes its IP and MAC address
+- The sender includes its IP and MAC address
 
-\- The request asks: “Who has <target IP>?”
+- The request asks: “Who has <target IP>?”
 
 
 
@@ -80,11 +80,11 @@ This matches the expected ARP behavior: when a host knows the target IP address 
 
 
 
-\# Part 2 — ARP Reply (Unicast)
+# Part 2 — ARP Reply (Unicast)
 
 
 
-!\[ARP Reply](screenshots/arp\_reply.png)
+![ARP Reply](screenshots/arp\_reply.png)
 
 
 
@@ -92,15 +92,15 @@ In the ARP reply packet:
 
 
 
-\- \*\*Destination MAC:\*\* a specific device MAC address (not broadcast)
+- **Destination MAC:** a specific device MAC address (not broadcast)
 
-\- \*\*Opcode:\*\* reply (2)
+- **Opcode:** reply (2)
 
-\- The responding host provides its MAC address
+- The responding host provides its MAC address
 
 
 
-Unlike the request, the reply is \*\*unicast\*\*, meaning it is sent only to the requesting host.
+Unlike the request, the reply is **unicast**, meaning it is sent only to the requesting host.
 
 
 
@@ -110,9 +110,9 @@ This reduces unnecessary traffic since only the requester needs the mapping.
 
 This demonstrates the asymmetry of ARP:
 
-\- Request → broadcast
+- Request → broadcast
 
-\- Reply → unicast
+- Reply → unicast
 
 
 
@@ -120,11 +120,11 @@ This demonstrates the asymmetry of ARP:
 
 
 
-\# Part 3 — ARP Structure and Minimum Frame Size
+# Part 3 — ARP Structure and Minimum Frame Size
 
 
 
-!\[ARP Structure](screenshots/arp\_structure.png)
+![ARP Structure](screenshots/arp\_structure.png)
 
 
 
@@ -132,35 +132,35 @@ From the ARP header:
 
 
 
-\- \*\*Hardware size:\*\* 6 bytes (MAC address length)
+- **Hardware size:** 6 bytes (MAC address length)
 
-\- \*\*Protocol size:\*\* 4 bytes (IPv4 address length)
+- **Protocol size:** 4 bytes (IPv4 address length)
 
 
 
 An ARP message contains:
 
-\- Sender MAC (6 bytes)
+- Sender MAC (6 bytes)
 
-\- Sender IP (4 bytes)
+- Sender IP (4 bytes)
 
-\- Target MAC (6 bytes)
+- Target MAC (6 bytes)
 
-\- Target IP (4 bytes)
+- Target IP (4 bytes)
 
-\- Additional ARP header fields
+- Additional ARP header fields
 
 
 
-Total ARP payload size: \*\*28 bytes\*\*
+Total ARP payload size: **28 bytes**
 
 
 
 However, Ethernet requires:
 
-\- Minimum payload: \*\*46 bytes\*\*
+- Minimum payload: **46 bytes**
 
-\- Minimum frame size: \*\*64 bytes total\*\* (including FCS)
+- Minimum frame size: **64 bytes total** (including FCS)
 
 
 
@@ -176,7 +176,7 @@ Even though Wireshark on Wi-Fi does not explicitly show Ethernet padding (due to
 
 
 
-\# Conceptual Connections
+# Conceptual Connections
 
 
 
@@ -184,15 +184,15 @@ This lab demonstrates several important networking concepts:
 
 
 
-\- Ethernet frame structure (Destination MAC, Source MAC, EtherType, Payload)
+- Ethernet frame structure (Destination MAC, Source MAC, EtherType, Payload)
 
-\- MAC addressing and broadcast behavior
+- MAC addressing and broadcast behavior
 
-\- ARP as the bridge between IP addressing (network layer) and MAC addressing (link layer)
+- ARP as the bridge between IP addressing (network layer) and MAC addressing (link layer)
 
-\- Ethernet minimum frame size constraints
+- Ethernet minimum frame size constraints
 
-\- How link-layer requirements influence higher-layer protocol behavior
+- How link-layer requirements influence higher-layer protocol behavior
 
 
 
@@ -200,7 +200,7 @@ This lab demonstrates several important networking concepts:
 
 
 
-\# Reflection
+# Reflection
 
 
 
@@ -214,9 +214,9 @@ The minimum frame size requirement was especially interesting. Even though moder
 
 Capturing real traffic reinforced the distinction between:
 
-\- End-to-end IP addressing
+- End-to-end IP addressing
 
-\- One-hop Ethernet delivery
+- One-hop Ethernet delivery
 
 
 
@@ -228,13 +228,13 @@ ARP exists precisely because these layers operate independently.
 
 
 
-\# Files Included
+# Files Included
 
 
 
-\- `capture.pcapng` — Full Wireshark capture
+- `capture.pcapng` — Full Wireshark capture
 
-\- `/screenshots/` — Evidence screenshots used in this analysis
+- `/screenshots/` — Evidence screenshots used in this analysis
 
 
 
