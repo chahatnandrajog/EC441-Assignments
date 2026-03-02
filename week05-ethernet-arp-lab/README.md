@@ -10,11 +10,11 @@ In this lab, I captured live network traffic using Wireshark in order to analyze
 
 
 
-1\. An ARP request (broadcast)
+1. An ARP request (broadcast)
 
-2\. An ARP reply (unicast)
+2. An ARP reply (unicast)
 
-3\. The relationship between ARP size and Ethernet’s minimum frame size requirement
+3. The relationship between ARP size and Ethernet’s minimum frame size requirement
 
 
 
@@ -66,7 +66,7 @@ In the ARP request packet:
 
 
 
-The destination MAC address being all `ff` indicates a \*\*broadcast\*\*.  
+The destination MAC address being all `ff` indicates a **broadcast**.  
 
 This means the frame is delivered to every device on the local LAN.
 
