@@ -1,0 +1,147 @@
+
+===================================================
+Scenario 1: Normal journey with NAT and no drops
+===================================================
+Starting Packet
+---------------
+TCP packet | 192.168.1.25:51515 -> 93.184.216.34:443 | TTL=64 | Length=1200 bytes | DF set
+
+Hop 1: Home Router
+------------------
+  Router decrements TTL. New TTL = 63
+  This router performs NAT/PAT.
+    NAT translation created:
+      LAN side: 192.168.1.25:51515
+      WAN side: 203.0.113.10:40001
+  Packet after NAT:
+    TCP packet | 203.0.113.10:40001 -> 93.184.216.34:443 | TTL=63 | Length=1200 bytes | DF set
+  Packet fits within this link MTU (1500). No fragmentation needed.
+  Packet forwarded to next hop.
+
+Hop 2: ISP Router
+-----------------
+  Router decrements TTL. New TTL = 62
+  Packet fits within this link MTU (1500). No fragmentation needed.
+  Packet forwarded to next hop.
+
+Hop 3: Backbone Router
+----------------------
+  Router decrements TTL. New TTL = 61
+  Packet fits within this link MTU (1500). No fragmentation needed.
+  Packet forwarded to next hop.
+
+Hop 4: Destination Edge Router
+------------------------------
+  Router decrements TTL. New TTL = 60
+  Packet fits within this link MTU (1500). No fragmentation needed.
+  Packet forwarded to next hop.
+
+Destination Reached
+-------------------
+The packet reached the destination server.
+If this were ping, the destination would send an ICMP Echo Reply.
+If this were TCP/UDP, the destination host would use the protocol and port fields to deliver the data.
+
+Final NAT Translation Table
+---------------------------
+WAN Side              LAN Side
+203.0.113.10:40001   192.168.1.25:51515
+
+===================================================
+Scenario 2: TTL expires like traceroute
+===================================================
+Starting Packet
+---------------
+UDP packet | 192.168.1.25:33434 -> 93.184.216.34:33434 | TTL=2 | Length=100 bytes | DF set
+
+Hop 1: Home Router
+------------------
+  Router decrements TTL. New TTL = 1
+  This router performs NAT/PAT.
+    NAT translation created:
+      LAN side: 192.168.1.25:33434
+      WAN side: 203.0.113.10:40001
+  Packet after NAT:
+    UDP packet | 203.0.113.10:40001 -> 93.184.216.34:33434 | TTL=1 | Length=100 bytes | DF set
+  Packet fits within this link MTU (1500). No fragmentation needed.
+  Packet forwarded to next hop.
+
+Hop 2: ISP Router
+-----------------
+  Router decrements TTL. New TTL = 0
+  TTL reached 0.
+  Router drops the packet.
+  ICMP Time Exceeded message would be sent back to the source.
+  This is the mechanism traceroute uses to discover routers.
+
+===================================================
+Scenario 3: IPv4 fragmentation when DF is not set
+===================================================
+Starting Packet
+---------------
+UDP packet | 192.168.1.25:5001 -> 93.184.216.34:5002 | TTL=64 | Length=4000 bytes | DF not set
+
+Hop 1: Home Router
+------------------
+  Router decrements TTL. New TTL = 63
+  This router performs NAT/PAT.
+    NAT translation created:
+      LAN side: 192.168.1.25:5001
+      WAN side: 203.0.113.10:40001
+  Packet after NAT:
+    UDP packet | 203.0.113.10:40001 -> 93.184.216.34:5002 | TTL=63 | Length=4000 bytes | DF not set
+  Packet length (4000) exceeds this link MTU (1500).
+  DF flag is not set, so IPv4 fragmentation occurs.
+  Generated fragments:
+    Fragment | Total Length | MF Flag | Fragment Offset
+    1        | 1500         | 1       | 0
+    2        | 1500         | 1       | 185
+    3        | 1040         | 0       | 370
+  Reassembly would happen only at the destination, not at this router.
+  Packet forwarded to next hop.
+
+Hop 2: Smaller MTU Router
+-------------------------
+  Router decrements TTL. New TTL = 62
+  Packet length (4000) exceeds this link MTU (1500).
+  DF flag is not set, so IPv4 fragmentation occurs.
+  Generated fragments:
+    Fragment | Total Length | MF Flag | Fragment Offset
+    1        | 1500         | 1       | 0
+    2        | 1500         | 1       | 185
+    3        | 1040         | 0       | 370
+  Reassembly would happen only at the destination, not at this router.
+  Packet forwarded to next hop.
+
+Destination Reached
+-------------------
+The packet reached the destination server.
+If this were ping, the destination would send an ICMP Echo Reply.
+If this were TCP/UDP, the destination host would use the protocol and port fields to deliver the data.
+
+Final NAT Translation Table
+---------------------------
+WAN Side              LAN Side
+203.0.113.10:40001   192.168.1.25:5001
+
+===================================================
+Scenario 4: Path MTU Discovery behavior
+===================================================
+Starting Packet
+---------------
+UDP packet | 192.168.1.25:5001 -> 93.184.216.34:5002 | TTL=64 | Length=4000 bytes | DF set
+
+Hop 1: Home Router
+------------------
+  Router decrements TTL. New TTL = 63
+  This router performs NAT/PAT.
+    NAT translation created:
+      LAN side: 192.168.1.25:5001
+      WAN side: 203.0.113.10:40001
+  Packet after NAT:
+    UDP packet | 203.0.113.10:40001 -> 93.184.216.34:5002 | TTL=63 | Length=4000 bytes | DF set
+  Packet length (4000) exceeds this link MTU (1500).
+  DF flag is set, so the router cannot fragment it.
+  Router drops the packet.
+  ICMP Destination Unreachable: Fragmentation Needed would be sent.
+  This is the core idea behind Path MTU Discovery.
